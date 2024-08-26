@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Morpheus", "Morpheus\Morpheus.csproj", "{F981D656-3F9B-4B89-A0F5-CB4204EE83EB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Morpheus.Tests", "Morpheus.Tests\Morpheus.Tests.csproj", "{64DEF678-C5A3-44E7-9A36-E2DEDF1293FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Morpheus.Demo.RayLib", "Morpheus.Demo.RayLib\Morpheus.Demo.RayLib.csproj", "{77C5CF51-F2FE-4E95-B3C4-6D81D02E97D0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F981D656-3F9B-4B89-A0F5-CB4204EE83EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F981D656-3F9B-4B89-A0F5-CB4204EE83EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F981D656-3F9B-4B89-A0F5-CB4204EE83EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F981D656-3F9B-4B89-A0F5-CB4204EE83EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64DEF678-C5A3-44E7-9A36-E2DEDF1293FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64DEF678-C5A3-44E7-9A36-E2DEDF1293FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64DEF678-C5A3-44E7-9A36-E2DEDF1293FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64DEF678-C5A3-44E7-9A36-E2DEDF1293FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77C5CF51-F2FE-4E95-B3C4-6D81D02E97D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77C5CF51-F2FE-4E95-B3C4-6D81D02E97D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77C5CF51-F2FE-4E95-B3C4-6D81D02E97D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77C5CF51-F2FE-4E95-B3C4-6D81D02E97D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BD8B7DF2-9807-4F92-B07B-4BA07D5DB2A3}
+	EndGlobalSection
+EndGlobal
