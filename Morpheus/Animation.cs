@@ -284,6 +284,8 @@ namespace Morpheus
                 _inManager = true;
             }
 
+            UpdateProperties(Offset);
+
             IsPlaying = true;
             return this;
         }

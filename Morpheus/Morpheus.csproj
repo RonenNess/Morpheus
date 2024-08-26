@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Morpheus</Title>
+    <VersionPrefix>1.0.1</VersionPrefix>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Copyright>Ronen Ness</Copyright>
     <RepositoryUrl>https://github.com/RonenNess/Morpheus</RepositoryUrl>

@@ -297,6 +297,12 @@ It uses `RayLib` for rendering.
 
 A test project can be found under [Morpheus.Tests](Morpheus.Tests).
 
+# Changelist
+
+## 1.0.1 [WIP]
+
+- To prevent flickering, fixed so that targets will be set with animation 'From' values as soon as animation starts.
+
 # License
 
 `Morpheus` is distributed with the MIT license and can be used for any purpose.
