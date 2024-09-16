@@ -26,6 +26,9 @@ namespace Morpheus
         // method to run when done
         Action? _onDone;
 
+        // last spawned animation
+        Animation? _lastSpawnedAnimation;
+
         /// <summary>
         /// Create the animation builder.
         /// </summary>
@@ -94,10 +97,12 @@ namespace Morpheus
         /// Set method to run when done.
         /// </summary>
         /// <param name="onDone">Method to call when done.</param>
+        /// <param name="applyOnLastSpawned">If true (default) and we already spawned an animation, it will also apply the 'Then' method on the last spawned animation.</param>
         /// <returns>Self, for chaining.</returns>
-        public AnimationBuilder Then(Action? onDone)
+        public AnimationBuilder Then(Action? onDone, bool applyOnLastSpawned = true)
         {
             _onDone = onDone;
+            _lastSpawnedAnimation?.Then(onDone!);
             return this;
         }
 
@@ -112,6 +117,7 @@ namespace Morpheus
             ret.AddToObjectsPoolWhenDone = true;
             ret.Build(GetCompiledProperties(), _target!, _duration, _onDone);
             ret.SetSpeed(speed).Once().Start();
+            _lastSpawnedAnimation = ret;
             return this;
         }
 
@@ -126,6 +132,7 @@ namespace Morpheus
             ret.AddToObjectsPoolWhenDone = true;
             ret.Build(GetCompiledProperties(), _target!, _duration, _onDone);
             ret.SetSpeed(speed).Reverse().Once().Start();
+            _lastSpawnedAnimation = ret;
             return this;
         }
 
@@ -140,6 +147,7 @@ namespace Morpheus
             ret.AddToObjectsPoolWhenDone = true;
             ret.Build(GetCompiledProperties(), target, _duration, _onDone);
             ret.SetSpeed(speed).Once().Start();
+            _lastSpawnedAnimation = ret;
             return this;
         }
 
@@ -154,6 +162,7 @@ namespace Morpheus
             ret.AddToObjectsPoolWhenDone = true;
             ret.Build(GetCompiledProperties(), target, _duration, _onDone);
             ret.SetSpeed(speed).Reverse().Once().Start();
+            _lastSpawnedAnimation = ret;
             return this;
         }
 
@@ -168,6 +177,7 @@ namespace Morpheus
             var ret = Animation.GetInstance();
             ret.AddToObjectsPoolWhenDone = false;
             ret.Build(GetCompiledProperties(), _target!, _duration, _onDone);
+            _lastSpawnedAnimation = ret;
             return ret;
         }
 
@@ -183,6 +193,7 @@ namespace Morpheus
             var ret = Animation.GetInstance();
             ret.AddToObjectsPoolWhenDone = false;
             ret.Build(GetCompiledProperties(), target, _duration, _onDone);
+            _lastSpawnedAnimation = ret;
             return ret;
         }
 
