@@ -301,11 +301,11 @@ A test project can be found under [Morpheus.Tests](Morpheus.Tests).
 
 ## 1.0.1
 
-- To prevent flickering, fixed so that targets will be set with animation 'From' values as soon as animation starts.
+- To prevent flickering, fixed so that targets will be set with animation `From` values as soon as animation starts.
 - Made `ClearCache` and `RemoveAll` thread safe.
 - Added option to remove all animations tied to a specific target.
-- Added option to set animations 'To' value as a getter method.
-- Removed exception if calling 'Start()' on already playing animation, or 'Stop()' on non playing animation. It caused more harm than good and the behavior is pretty well defined so no need for exception.
+- Added option to set animations `To` value as a getter method.
+- Removed exception if calling `Start()` on already playing animation, or `Stop()` on non playing animation. It caused more harm than good and the behavior is pretty well defined so no need for exception.
 - Made `Then()` in Animation Builder also affect last spawned animation.
 
 # License
