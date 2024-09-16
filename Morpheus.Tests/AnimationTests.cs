@@ -36,6 +36,67 @@ namespace Morpheus.Tests
         }
 
         [TestMethod]
+        public void RemoveAllAnimations()
+        {
+            // use remove all without target
+            {
+                VectorCls target = new VectorCls(0, 0);
+                var animation = Morpheus
+                    .Animate(target)
+                        .Property("X").From(0).To(10)
+                        .Property("Y").From(0).To(10)
+                    .For(TimeSpan.FromSeconds(2))
+                    .Spawn()
+                    .Start();
+
+                VectorCls target2 = new VectorCls(0, 0);
+                var animation2 = Morpheus
+                    .Animate(target2)
+                        .Property("X").From(0).To(10)
+                        .Property("Y").From(0).To(10)
+                    .For(TimeSpan.FromSeconds(2))
+                    .Spawn()
+                    .Start();
+
+                Assert.AreEqual(2, Morpheus.AnimationsCount, "Number of playing animations should be '2' after adding two animations!");
+                Assert.IsTrue(animation.IsPlaying, "Newly added animation state should be 'Playing'!");
+
+                Morpheus.RemoveAll();
+                Assert.AreEqual(0, Morpheus.AnimationsCount, "Number of playing animations should be '0' after removing all animations!");
+                Assert.IsFalse(animation.IsPlaying, "Animation state should not be 'Playing' after it was removed!");
+            }
+
+            // use remove all with target
+            {
+                VectorCls target = new VectorCls(0, 0);
+                var animation = Morpheus
+                    .Animate(target)
+                        .Property("X").From(0).To(10)
+                        .Property("Y").From(0).To(10)
+                    .For(TimeSpan.FromSeconds(2))
+                    .Spawn()
+                    .Start();
+
+                VectorCls target2 = new VectorCls(0, 0);
+                var animation2 = Morpheus
+                    .Animate(target2)
+                        .Property("X").From(0).To(10)
+                        .Property("Y").From(0).To(10)
+                    .For(TimeSpan.FromSeconds(2))
+                    .Spawn()
+                    .Start();
+
+                Assert.AreEqual(2, Morpheus.AnimationsCount, "Number of playing animations should be '2' after adding two animations!");
+                Assert.IsTrue(animation.IsPlaying, "Newly added animation state should be 'Playing'!");
+
+                Morpheus.RemoveAll(target2);
+                Assert.AreEqual(1, Morpheus.AnimationsCount, "Number of playing animations should be '1' after removing all animations with specific target!");
+                Assert.IsTrue(animation.IsPlaying, "Animation state of the other animation should still be 'Playing' since it wasn't removed!");
+                Assert.IsFalse(animation2.IsPlaying, "Animation state of the removed animation should not be 'Playing' after it was removed!");
+            }
+        }
+
+        [TestMethod]
         public void AddingAndRemovingAnimations()
         {
             // adding and removing animations manually

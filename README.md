@@ -303,6 +303,7 @@ A test project can be found under [Morpheus.Tests](Morpheus.Tests).
 
 - To prevent flickering, fixed so that targets will be set with animation 'From' values as soon as animation starts.
 - Made `ClearCache` and `RemoveAll` thread safe.
+- Added option to remove all animations tied to a specific target.
 
 
 # License

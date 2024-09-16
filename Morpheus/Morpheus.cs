@@ -70,8 +70,21 @@ namespace Morpheus
             foreach (var anim in _animations)
             {
                 anim._inManager = false;
+                if (anim.IsPlaying) { anim.Stop(); }
             }
             _animations = new();
+        }
+
+        /// <summary>
+        /// Remove all animations tied to a specific target.
+        /// </summary>
+        public static void RemoveAll(object target)
+        {
+            foreach (var anim in _animations.Where(x => x.Target == target).ToArray())
+            {
+                _RemoveAnimation(anim);
+                if (anim.IsPlaying) { anim.Stop(); }
+            }
         }
 
         /// <summary>
