@@ -305,6 +305,7 @@ A test project can be found under [Morpheus.Tests](Morpheus.Tests).
 - Made `ClearCache` and `RemoveAll` thread safe.
 - Added option to remove all animations tied to a specific target.
 - Added option to set animations 'To' value as a getter method.
+- Removed exception if calling 'Start()' on already playing animation, or 'Stop()' on non playing animation. It caused more harm than good and the behavior is pretty well defined so no need for exception.
 
 # License
 

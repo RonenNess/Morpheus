@@ -269,11 +269,6 @@ namespace Morpheus
         /// <returns>Self, for chaining.</returns>
         public Animation Start()
         {
-            if (IsPlaying)
-            {
-                throw new Exception("Animation to start is already playing!");
-            }
-
             if (IsDone)
             {
                 Reset();
@@ -327,11 +322,6 @@ namespace Morpheus
         /// <returns>Self, for chaining.</returns>
         public Animation Stop()
         {
-            if (!IsPlaying)
-            {
-                throw new Exception("Animation to stop is not playing!");
-            }
-
             if (_inManager)
             {
                 Morpheus._RemoveAnimation(this);
