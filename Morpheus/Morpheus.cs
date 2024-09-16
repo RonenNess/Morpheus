@@ -53,12 +53,12 @@ namespace Morpheus
         {
             if (objectPools)
             {
-                Animation._objectsPool.Clear();
+                Animation._objectsPool = new();
             }
 
             if (reflectionsCache)
             {
-                AnimationBuilder._cachedReflectionResults.Clear();
+                AnimationBuilder._cachedReflectionResults = new();
             }
         }
 
@@ -71,7 +71,7 @@ namespace Morpheus
             {
                 anim._inManager = false;
             }
-            _animations.Clear();
+            _animations = new();
         }
 
         /// <summary>
