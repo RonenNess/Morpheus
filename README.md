@@ -299,7 +299,7 @@ A test project can be found under [Morpheus.Tests](Morpheus.Tests).
 
 # Changelist
 
-## 1.0.1 [WIP]
+## 1.0.1
 
 - To prevent flickering, fixed so that targets will be set with animation 'From' values as soon as animation starts.
 - Made `ClearCache` and `RemoveAll` thread safe.
