@@ -308,6 +308,10 @@ A test project can be found under [Morpheus.Tests](Morpheus.Tests).
 - Removed exception if calling `Start()` on already playing animation, or `Stop()` on non playing animation. It caused more harm than good and the behavior is pretty well defined so no need for exception.
 - Made `Then()` in Animation Builder also affect last spawned animation.
 
+## 1.0.2
+
+- Fixed bug with `Then()` in Animation Builder.
+
 # License
 
 `Morpheus` is distributed with the MIT license and can be used for any purpose.

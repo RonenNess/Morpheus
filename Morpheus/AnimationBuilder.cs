@@ -102,7 +102,10 @@ namespace Morpheus
         public AnimationBuilder Then(Action? onDone, bool applyOnLastSpawned = true)
         {
             _onDone = onDone;
-            _lastSpawnedAnimation?.Then(onDone!);
+            if (applyOnLastSpawned && (_lastSpawnedAnimation?._inManager ?? false))
+            {
+                _lastSpawnedAnimation?.Then(onDone!);
+            }
             return this;
         }
 
