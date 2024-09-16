@@ -17,6 +17,11 @@ namespace Morpheus
         static public ulong CachedAnimationsReuse;
 
         /// <summary>
+        /// If true (default) will always update animation properties as soon as animation starts.
+        /// </summary>
+        public static bool UpdatePropertiesOnStart = true;
+
+        /// <summary>
         /// Get animation instance, either from pool or crate a new instance.
         /// </summary>
         public static Animation GetInstance()
@@ -280,7 +285,10 @@ namespace Morpheus
                 _inManager = true;
             }
 
-            UpdateProperties(Offset);
+            if (UpdatePropertiesOnStart)
+            {
+                UpdateProperties(Offset);
+            }
 
             IsPlaying = true;
             return this;
