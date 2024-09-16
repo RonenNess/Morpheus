@@ -206,6 +206,7 @@ namespace Morpheus
                         {
                             FromValue = property._fromValue,
                             ToValue = property._toValue,
+                            ToValueGetter = property._toValueGetter,
                             Setter = property._setterMethod,
                             InterpolateMethod = property._interpolationMethod,
                             DataType = property._fromValue.GetType(),
@@ -218,6 +219,7 @@ namespace Morpheus
                         {
                             FromValue = property._fromValue,
                             ToValue = property._toValue,
+                            ToValueGetter = property._toValueGetter,
                             InterpolateMethod = property._interpolationMethod,
                         };
                         _FillPropertyOrField(_targetType, ref newProp, property._propertyName);
@@ -272,7 +274,8 @@ namespace Morpheus
             public InterpolateMethod InterpolateMethod;
             public Type DataType;
             public object FromValue;
-            public object ToValue;
+            public object? ToValue;
+            public Func<object>? ToValueGetter;
         }
         internal List<AnimatedPropertyData> _cachedCompiledProperties = new();
     }
@@ -311,6 +314,15 @@ namespace Morpheus
         /// <param name="interpolation">Interpolation method. Will default to Linear. Check out Interpolation static class for predefined options.</param>
         /// <returns>Animation builder, to proceed with next property.</returns>
         public AnimationBuilder To(object value, InterpolateMethod? interpolation = null);
+
+        /// <summary>
+        /// Set ending value to animate to that is retrieved by calling a method every update call.
+        /// Use this for animations where the To value changes, for example if it needs to follow a moving position.
+        /// </summary>
+        /// <param name="valueGetter">Method to return value to animate to.</param>
+        /// <param name="interpolation">Interpolation method. Will default to Linear. Check out Interpolation static class for predefined options.</param>
+        /// <returns>Animation builder, to proceed with next property.</returns>
+        public AnimationBuilder To(Func<object> valueGetter, InterpolateMethod? interpolation = null);
     }
 
     /// <summary>
@@ -333,6 +345,7 @@ namespace Morpheus
         // from and to values
         internal object _fromValue = null!;
         internal object _toValue = null!;
+        internal Func<object> _toValueGetter = null!;
 
         /// <inheritdoc/>
         public IAnimationPropertyDef_ToStep From(object value)
@@ -349,6 +362,18 @@ namespace Morpheus
                 throw new InvalidOperationException("'To' value must be the same type as 'From' value.");
             }
             _toValue = value;
+            _interpolationMethod = interpolation ?? Interpolation.Linear;
+            return _parentAnimation;
+        }
+
+        /// <inheritdoc/>
+        public AnimationBuilder To(Func<object> valueGetter, InterpolateMethod? interpolation = null)
+        {
+            if (_fromValue.GetType() != valueGetter().GetType())
+            {
+                throw new InvalidOperationException("'To' value returned from getter method must be the same type as 'From' value.");
+            }
+            _toValueGetter = valueGetter;
             _interpolationMethod = interpolation ?? Interpolation.Linear;
             return _parentAnimation;
         }

@@ -237,7 +237,8 @@ namespace Morpheus
             foreach (var property in _properties)
             {
                 // calculate value
-                var value = ObjectsInterpolation.Interpolate(property.DataType, property.FromValue, property.ToValue, progress, property.InterpolateMethod);
+                var toValue = property.ToValueGetter?.Invoke() ?? property.ToValue;
+                var value = ObjectsInterpolation.Interpolate(property.DataType, property.FromValue, toValue!, progress, property.InterpolateMethod);
 
                 // set as field
                 if (property.Field != null)

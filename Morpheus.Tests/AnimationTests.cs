@@ -236,6 +236,30 @@ namespace Morpheus.Tests
         }
 
         [TestMethod]
+        public void AnimateWithToValueGetter()
+        {
+            // simple 1 second animation with getter as 'To' value
+            {
+                int retValue = 10;
+                VectorCls target = new VectorCls(0, 0);
+                Morpheus
+                    .Animate(target)
+                        .Property("X").From(0).To(() => retValue)
+                    .For(TimeSpan.FromSeconds(1))
+                    .Start();
+
+                // advance animation by 0.5 seconds
+                Morpheus.Update(0.5f);
+                Assert.AreEqual(5, target.X, "Vector value should be 5 after 0.5 seconds passed!");
+
+                // update the returned 'To' value and advance animation by another 0.5 seconds
+                retValue = 20;
+                Morpheus.Update(0.5f);
+                Assert.AreEqual(20, target.X, "Vector value should be 20 after another 0.5 seconds passed (since we changed the 'To' value returned from the getter)!");
+            }
+        }
+
+        [TestMethod]
         public void AnimateBasicProperties()
         {
             // simple 1 second animation
