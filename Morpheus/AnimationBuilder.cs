@@ -26,6 +26,9 @@ namespace Morpheus
         // method to run when done
         Action? _onDone;
 
+        // delay before starting animations
+        float _delay = 0f;
+
         // last spawned animation
         Animation? _lastSpawnedAnimation;
 
@@ -110,17 +113,38 @@ namespace Morpheus
         }
 
         /// <summary>
+        /// Set delay before starting animation.
+        /// </summary>
+        /// <param name="time">Time to delay animation, in seconds.</param>
+        /// <returns>Self, for chaining.</returns>
+        public AnimationBuilder Delay(float time)
+        {
+            _delay = time;
+            return this;
+        }
+
+        /// <summary>
+        /// Spawn and return an animation instance.
+        /// </summary>
+        Animation SpawnAnimation(object? target = null, float speed = 1f)
+        {
+            var ret = Animation.GetInstance();
+            ret.AddToObjectsPoolWhenDone = true;
+            ret.Build(GetCompiledProperties(), target ?? _target!, _duration, _onDone);
+            ret.SetSpeed(speed).Delay(_delay);
+            _lastSpawnedAnimation = ret;
+            return ret;
+        }
+
+        /// <summary>
         /// Play this animation once.
         /// </summary>
         /// <param name="speed">Speed factor.</param>
         /// <returns>Self, for chaining.</returns>
         public AnimationBuilder Start(float speed = 1f)
         {
-            var ret = Animation.GetInstance();
-            ret.AddToObjectsPoolWhenDone = true;
-            ret.Build(GetCompiledProperties(), _target!, _duration, _onDone);
-            ret.SetSpeed(speed).Once().Start();
-            _lastSpawnedAnimation = ret;
+            var ret = SpawnAnimation(_target, speed);
+            ret.Once().Start();
             return this;
         }
 
@@ -131,11 +155,8 @@ namespace Morpheus
         /// <returns>Self, for chaining.</returns>
         public AnimationBuilder StartReverse(float speed = 1f)
         {
-            var ret = Animation.GetInstance();
-            ret.AddToObjectsPoolWhenDone = true;
-            ret.Build(GetCompiledProperties(), _target!, _duration, _onDone);
-            ret.SetSpeed(speed).Reverse().Once().Start();
-            _lastSpawnedAnimation = ret;
+            var ret = SpawnAnimation(_target, speed);
+            ret.Reverse().Once().Start();
             return this;
         }
 
@@ -146,11 +167,8 @@ namespace Morpheus
         /// <returns>Self, for chaining.</returns>
         public AnimationBuilder StartOn(object target, float speed = 1f)
         {
-            var ret = Animation.GetInstance();
-            ret.AddToObjectsPoolWhenDone = true;
-            ret.Build(GetCompiledProperties(), target, _duration, _onDone);
-            ret.SetSpeed(speed).Once().Start();
-            _lastSpawnedAnimation = ret;
+            var ret = SpawnAnimation(target, speed);
+            ret.Once().Start();
             return this;
         }
 
@@ -161,11 +179,8 @@ namespace Morpheus
         /// <returns>Self, for chaining.</returns>
         public AnimationBuilder StartReverseOn(object target, float speed = 1f)
         {
-            var ret = Animation.GetInstance();
-            ret.AddToObjectsPoolWhenDone = true;
-            ret.Build(GetCompiledProperties(), target, _duration, _onDone);
-            ret.SetSpeed(speed).Reverse().Once().Start();
-            _lastSpawnedAnimation = ret;
+            var ret = SpawnAnimation(target, speed);
+            ret.Reverse().Once().Start();
             return this;
         }
 
@@ -177,10 +192,8 @@ namespace Morpheus
         /// <returns>Animation instance.</returns>
         public Animation Spawn()
         {
-            var ret = Animation.GetInstance();
+            var ret = SpawnAnimation(_target, 1f);
             ret.AddToObjectsPoolWhenDone = false;
-            ret.Build(GetCompiledProperties(), _target!, _duration, _onDone);
-            _lastSpawnedAnimation = ret;
             return ret;
         }
 
@@ -193,10 +206,8 @@ namespace Morpheus
         /// <returns>Animation instance.</returns>
         public Animation SpawnOn(object target)
         {
-            var ret = Animation.GetInstance();
+            var ret = SpawnAnimation(target, 1f);
             ret.AddToObjectsPoolWhenDone = false;
-            ret.Build(GetCompiledProperties(), target, _duration, _onDone);
-            _lastSpawnedAnimation = ret;
             return ret;
         }
 

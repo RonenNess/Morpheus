@@ -73,6 +73,9 @@ namespace Morpheus
         // speed factor
         float _speed = 1f;
 
+        // if > 0, will delay for this duration in seconds
+        float _delaySeconds = 0f;
+
         // action to perform on animation end
         Action? _triggerOnAnimationEnds;
 
@@ -107,6 +110,7 @@ namespace Morpheus
             _inManager = false;
             _properties = null!;
             Offset = 0f;
+            _delaySeconds = 0f;
             _speed = 1f;
         }
 
@@ -175,6 +179,7 @@ namespace Morpheus
             this._triggerOnAnimationEnds = other._triggerOnAnimationEnds;
             this._speed = other._speed;
             this._durationSpeedFactor = other._durationSpeedFactor;
+            this._delaySeconds = other._delaySeconds;
         }
 
         /// <summary>
@@ -189,8 +194,16 @@ namespace Morpheus
                 return; 
             }
 
+            // have delay?
+            if (_delaySeconds > 0f)
+            {
+                _delaySeconds -= deltaTime;
+            }
             // update animation
-            Offset += deltaTime * _speed * _durationSpeedFactor;
+            else
+            {
+                Offset += deltaTime * _speed * _durationSpeedFactor;
+            }
 
             // finished animation?
             bool isDone = false;
@@ -291,6 +304,16 @@ namespace Morpheus
             }
 
             IsPlaying = true;
+            return this;
+        }
+
+        /// <summary>
+        /// Add delay, in seconds, before progressing with the animation.
+        /// </summary>
+        /// <returns>Self, for chaining.</returns>
+        public Animation Delay(float time)
+        {
+            _delaySeconds += time;
             return this;
         }
 

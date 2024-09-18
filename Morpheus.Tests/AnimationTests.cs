@@ -236,6 +236,30 @@ namespace Morpheus.Tests
         }
 
         [TestMethod]
+        public void AnimateWithDelay()
+        {
+            // simple 1 second animation with delay
+            {
+                Vector2 target = new Vector2();
+                Morpheus
+                    .Animate(target)
+                        .Setter((Vector2 x) => target = x).From(Vector2.Zero).To(new Vector2(10, 5))
+                    .For(TimeSpan.FromSeconds(1))
+                    .Delay(0.5f)
+                    .Start();
+
+                // advance animation by 0.5 seconds - there's delay
+                Morpheus.Update(0.5f);
+                Assert.AreEqual(0f, target.X, "Vector X value should still be 0 after 0.5 seconds passed, since we added delay!");
+
+                // add another 0.5 seconds
+                Morpheus.Update(0.5f);
+                Assert.AreEqual(5f, target.X, "Vector X value should be 5 after 0.5 seconds passed after delay was done!");
+                Assert.AreEqual(2.5f, target.Y, "Vector Y value should be 2.5 after 0.5 seconds passed after delay was done!");
+            }
+        }
+
+        [TestMethod]
         public void AnimateWithToValueGetter()
         {
             // simple 1 second animation with getter as 'To' value

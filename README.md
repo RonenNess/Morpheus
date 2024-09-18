@@ -316,6 +316,10 @@ A test project can be found under [Morpheus.Tests](Morpheus.Tests).
 
 - Added flag to control if to play animations frame 0 as soon as they are created.
 
+# 1.0.4
+
+- Added 'Delay' to animations.
+
 # License
 
 `Morpheus` is distributed with the MIT license and can be used for any purpose.
