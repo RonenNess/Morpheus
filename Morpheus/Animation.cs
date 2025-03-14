@@ -21,6 +21,9 @@ namespace Morpheus
         /// </summary>
         public static bool UpdatePropertiesOnStart = true;
 
+        // if set, will play this sequence when done (each instance will remove itself from the front, then play the next animation in line).
+        internal IList<AnimationBuilder>? _animationsSequence;
+
         /// <summary>
         /// Get animation instance, either from pool or crate a new instance.
         /// </summary>
@@ -112,6 +115,7 @@ namespace Morpheus
             Offset = 0f;
             _delaySeconds = 0f;
             _speed = 1f;
+            _animationsSequence = null!;
         }
 
         /// <summary>
@@ -241,6 +245,17 @@ namespace Morpheus
                 if (IsRepeating)
                 {
                     Offset = _speed > 0f ? 0f : 1f;
+                }
+                // play sequence
+                else if (_animationsSequence != null)
+                {
+                    _animationsSequence.RemoveAt(0);
+                    if (_animationsSequence.Count > 0)
+                    {
+                        var next = _animationsSequence[0].SpawnAnimation(Target, _speed);
+                        next._animationsSequence = _animationsSequence;
+                        next.Once().Start();
+                    };
                 }
             }
         }

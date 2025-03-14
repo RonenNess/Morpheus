@@ -126,7 +126,7 @@ namespace Morpheus
         /// <summary>
         /// Spawn and return an animation instance.
         /// </summary>
-        Animation SpawnAnimation(object? target = null, float speed = 1f)
+        internal Animation SpawnAnimation(object? target = null, float speed = 1f)
         {
             var ret = Animation.GetInstance();
             ret.AddToObjectsPoolWhenDone = true;

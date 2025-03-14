@@ -1,1 +1,0 @@
-add option to play sequence of animations

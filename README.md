@@ -324,7 +324,8 @@ A test project can be found under [Morpheus.Tests](Morpheus.Tests).
 
 - Made the framework more thread safe.
 - Added delayed actions (run method after X seconds).
-- 
+- Added TotalElapedTime to show how long have passed, in seconds.
+- Added ability to play animation sequence.
 
 # License
 

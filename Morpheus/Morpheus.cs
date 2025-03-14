@@ -1,5 +1,4 @@
 ﻿
-using System.Numerics;
 
 namespace Morpheus
 {
@@ -74,6 +73,19 @@ namespace Morpheus
             var ret = Animate<T>();
             ret.On(target!);
             return ret;
+        }
+
+        /// <summary>
+        /// Play a sequence of animations, one after another.
+        /// </summary>
+        /// <param name="animations">Animations sequence to play.</param>
+        /// <param name="target">Optional target to run animation sequence on (if not defined, will use the object the animations were originally built on).</param>
+        /// <param name="speed">Animations play speed.</param>
+        public static void PlaySequence(IList<AnimationBuilder> animations, object? target = null, float speed = 1f)
+        {
+            var first = animations[0].SpawnAnimation(target, speed);
+            first._animationsSequence = new List<AnimationBuilder>(animations);
+            first.Once().Start();
         }
 
         /// <summary>
