@@ -1,4 +1,6 @@
 ﻿
+using System.Numerics;
+
 namespace Morpheus
 {
     /// <summary>
@@ -8,6 +10,9 @@ namespace Morpheus
     {
         // all animation instances
         static List<Animation> _animations = new List<Animation>();
+
+        // all delayed actions
+        static List<(Action Action, double ExpireAt)> _delayedActions = new List<(Action Action, double ExpireAt)>();
 
         /// <summary>
         /// If defined and we get an update with delta time bigger than this value, it will break the update into sub-steps.
@@ -19,6 +24,33 @@ namespace Morpheus
         /// If MaximumUpdateTime is defined, this number will limit the maximum amount of sub-steps we can break the update frame to.
         /// </summary>
         public static int MaxSubSteps = 100;
+
+        /// <summary>
+        /// Total elapsed time, in seconds.
+        /// </summary>
+        public static double TotalElapsedTime { get; private set; }
+
+        /// <summary>
+        /// Run action with delay.
+        /// </summary>
+        /// <param name="action">Method to run after delay.</param>
+        /// <param name="time">Time to wait, in seconds.</param>
+        public static void Delay(Action action, float time)
+        {
+            void InsertSorted(Action action, double value)
+            {
+                var item = (action, value);
+                int index = _delayedActions.BinarySearch(item, Comparer<(Action, double)>.Create((a, b) => a.Item2.CompareTo(b.Item2)));
+                if (index < 0) index = ~index; // BinarySearch returns the complement of the index if not found
+                {
+                    lock (_delayedActions)
+                    {
+                        _delayedActions.Insert(index, item);
+                    }
+                }
+            }
+            InsertSorted(action, TotalElapsedTime + time);
+        }
 
         /// <summary>
         /// Create a new animation builder.
@@ -63,16 +95,20 @@ namespace Morpheus
         }
 
         /// <summary>
-        /// Remove all animations.
+        /// Remove all animations and delayed actions.
         /// </summary>
         public static void RemoveAll()
         {
+            // remove all animations
             foreach (var anim in _animations)
             {
                 anim._inManager = false;
                 if (anim.IsPlaying) { anim.Stop(); }
             }
             _animations = new();
+
+            // remove all delayed actions
+            _delayedActions = new();
         }
 
         /// <summary>
@@ -85,6 +121,15 @@ namespace Morpheus
                 _RemoveAnimation(anim);
                 if (anim.IsPlaying) { anim.Stop(); }
             }
+        }
+
+        /// <summary>
+        /// Reset current elapsed time.
+        /// </summary>
+        public static void ResetElapsedTime()
+        {
+            _delayedActions = new();
+            TotalElapsedTime = 0;
         }
 
         /// <summary>
@@ -171,13 +216,35 @@ namespace Morpheus
                 if (i >= _animations.Count) { continue; }
 
                 // update current animation
-                var curr = _animations[i];
+                Animation curr = null!;
+                try
+                {
+                    curr = _animations[i];
+                }
+                catch { continue; }
                 curr.Update(deltaTime);
 
                 // remove animation if done and should be removed
                 if (curr.ShouldBeRemoved)
                 {
                     _RemoveAnimation(curr);
+                }
+            }
+
+            // update total elapsed time
+            TotalElapsedTime += deltaTime;
+
+            // run delayed actions
+            if (_delayedActions.Count > 0)
+            {
+                ulong currTime = (ulong)Math.Ceiling(TotalElapsedTime * 100000); // to ignore floating point precision issues
+                lock (_delayedActions)
+                {
+                    while ((_delayedActions.Count > 0) && (currTime >= (ulong)Math.Floor(_delayedActions[0].ExpireAt * 100000)))
+                    {
+                        _delayedActions[0].Action();
+                        _delayedActions.RemoveAt(0);
+                    }
                 }
             }
         }
@@ -187,8 +254,11 @@ namespace Morpheus
         /// </summary>
         static internal void _AddAnimation(Animation instance)
         {
-            _animations.Add(instance);
-            instance._inManager = true;
+            lock (_animations)
+            {
+                _animations.Add(instance);
+                instance._inManager = true;
+            }
         }
 
         /// <summary>
@@ -196,11 +266,14 @@ namespace Morpheus
         /// </summary>
         static internal void _RemoveAnimation(Animation instance)
         {
-            _animations.Remove(instance);
-            instance._inManager = false;
-            if (instance.AddToObjectsPoolWhenDone)
+            lock (_animations)
             {
-                Animation._objectsPool.Push(instance);
+                _animations.Remove(instance);
+                instance._inManager = false;
+                if (instance.AddToObjectsPoolWhenDone)
+                {
+                    Animation._objectsPool.Push(instance);
+                }
             }
         }
 

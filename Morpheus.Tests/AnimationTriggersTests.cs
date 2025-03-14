@@ -16,7 +16,7 @@ namespace Morpheus.Tests
         [TestInitialize]
         public void TestInitialize()
         {
-            // disable sub-steps to avoid percision issues
+            // disable sub-steps to avoid precision issues
             Morpheus.MaxUpdateTime = null;
         }
 

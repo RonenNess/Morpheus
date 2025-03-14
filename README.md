@@ -320,6 +320,12 @@ A test project can be found under [Morpheus.Tests](Morpheus.Tests).
 
 - Added 'Delay' to animations.
 
+## 1.0.5
+
+- Made the framework more thread safe.
+- Added delayed actions (run method after X seconds).
+- 
+
 # License
 
 `Morpheus` is distributed with the MIT license and can be used for any purpose.
