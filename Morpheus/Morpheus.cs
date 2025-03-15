@@ -13,6 +13,9 @@ namespace Morpheus
         // all delayed actions
         static List<(Action Action, double ExpireAt)> _delayedActions = new List<(Action Action, double ExpireAt)>();
 
+        // all timers
+        static List<Timer> _timers = new();
+
         /// <summary>
         /// If defined and we get an update with delta time bigger than this value, it will break the update into sub-steps.
         /// Defaults to a rate of 60 FPS.
@@ -89,6 +92,34 @@ namespace Morpheus
         }
 
         /// <summary>
+        /// Create and return a new timer.
+        /// </summary>
+        /// <param name="action">Timer's action.</param>
+        /// <param name="interval">Timer's interval, in seconds.</param>
+        /// <returns>Timer instance.</returns>
+        public static Timer CreateTimer(Action action, float interval)
+        {
+            var ret = new Timer(action, interval);
+            lock (_timers)
+            {
+                _timers.Add(ret);
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// Removes a timer.
+        /// </summary>
+        /// <param name="timer">Timer to remove.</param>
+        public static void RemoveTimer(Timer timer)
+        {
+            lock (_timers)
+            {
+                _timers.Remove(timer);
+            }
+        }
+
+        /// <summary>
         /// Clear internal caches.
         /// </summary>
         /// <param name="objectPools">If true, will clear internal object pools.</param>
@@ -121,6 +152,9 @@ namespace Morpheus
 
             // remove all delayed actions
             _delayedActions = new();
+
+            // remove all timers
+            _timers = new();
         }
 
         /// <summary>
@@ -214,26 +248,28 @@ namespace Morpheus
             _backgroundTimer.Dispose();
             _backgroundTimer = null;
         }
-         
+
         /// <summary>
         /// Perform single animations step.
         /// </summary>
         /// <param name="deltaTime">Delta time, since last frame.</param>
         private static void _DoStep(float deltaTime)
-        { 
+        {
             // update all animations
             for (int i = 0; i < _animations.Count; i++)
             {
                 // to handle changes mid-iteration
                 if (i >= _animations.Count) { continue; }
 
-                // update current animation
+                // get current animation
                 Animation curr = null!;
                 try
                 {
                     curr = _animations[i];
                 }
                 catch { continue; }
+
+                // update animation
                 curr.Update(deltaTime);
 
                 // remove animation if done and should be removed
@@ -257,6 +293,33 @@ namespace Morpheus
                         _delayedActions[0].Action();
                         _delayedActions.RemoveAt(0);
                     }
+                }
+            }
+
+            // run all timers
+            for (int i = 0; i < _timers.Count; i++)
+            {
+                // to handle changes mid-iteration
+                if (i >= _timers.Count) { continue; }
+
+                // get current timer
+                Timer timer = null!;
+                try
+                {
+                    timer = _timers[i];
+                }
+                catch { continue; }
+
+                // paused? skip
+                if (timer.Paused) { continue; }
+
+                // update timer
+                timer.ElapsedTime += deltaTime;
+                if (timer.ElapsedTime >= timer.Interval)
+                {
+                    timer.TriggeredCount++;
+                    timer.ElapsedTime = 0f;
+                    timer.Action?.Invoke();
                 }
             }
         }
